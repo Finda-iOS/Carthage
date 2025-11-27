@@ -1,0 +1,23 @@
+---
+triple:          'x86_64-apple-darwin'
+binary-path:     '/Users/finda0603/Library/Caches/org.carthage.CarthageKit/DerivedData/26.1.1_17B100/SDWebImage/5.19.1/Build/Products/Release-iphonesimulator/SDWebImageMapKit.framework/SDWebImageMapKit'
+relocations:
+  - { offset: 0x83FF0, size: 0x8, addend: 0x0, symName: _SDWebImageMapKitVersionString, symObjAddr: 0x0, symBinAddr: 0xDB0, symSize: 0x0 }
+  - { offset: 0x84025, size: 0x8, addend: 0x0, symName: _SDWebImageMapKitVersionNumber, symObjAddr: 0x38, symBinAddr: 0xDE8, symSize: 0x0 }
+  - { offset: 0x84062, size: 0x8, addend: 0x0, symName: '-[MKAnnotationView(WebCache) sd_setImageWithURL:]', symObjAddr: 0x0, symBinAddr: 0x9C8, symSize: 0x1A }
+  - { offset: 0x84070, size: 0x8, addend: 0x0, symName: '-[MKAnnotationView(WebCache) sd_setImageWithURL:]', symObjAddr: 0x0, symBinAddr: 0x9C8, symSize: 0x1A }
+  - { offset: 0x840DE, size: 0x8, addend: 0x0, symName: '-[MKAnnotationView(WebCache) sd_setImageWithURL:placeholderImage:]', symObjAddr: 0x1A, symBinAddr: 0x9E2, symSize: 0x18 }
+  - { offset: 0x8415C, size: 0x8, addend: 0x0, symName: '-[MKAnnotationView(WebCache) sd_setImageWithURL:placeholderImage:options:]', symObjAddr: 0x32, symBinAddr: 0x9FA, symSize: 0x26 }
+  - { offset: 0x841F2, size: 0x8, addend: 0x0, symName: '-[MKAnnotationView(WebCache) sd_setImageWithURL:placeholderImage:options:context:]', symObjAddr: 0x58, symBinAddr: 0xA20, symSize: 0x22 }
+  - { offset: 0x8429A, size: 0x8, addend: 0x0, symName: '-[MKAnnotationView(WebCache) sd_setImageWithURL:completed:]', symObjAddr: 0x7A, symBinAddr: 0xA42, symSize: 0x1A }
+  - { offset: 0x8431A, size: 0x8, addend: 0x0, symName: '-[MKAnnotationView(WebCache) sd_setImageWithURL:placeholderImage:completed:]', symObjAddr: 0x94, symBinAddr: 0xA5C, symSize: 0x18 }
+  - { offset: 0x843AA, size: 0x8, addend: 0x0, symName: '-[MKAnnotationView(WebCache) sd_setImageWithURL:placeholderImage:options:completed:]', symObjAddr: 0xAC, symBinAddr: 0xA74, symSize: 0x22 }
+  - { offset: 0x84450, size: 0x8, addend: 0x0, symName: '-[MKAnnotationView(WebCache) sd_setImageWithURL:placeholderImage:options:progress:completed:]', symObjAddr: 0xCE, symBinAddr: 0xA96, symSize: 0x21 }
+  - { offset: 0x84505, size: 0x8, addend: 0x0, symName: '-[MKAnnotationView(WebCache) sd_setImageWithURL:placeholderImage:options:context:progress:completed:]', symObjAddr: 0xEF, symBinAddr: 0xAB7, symSize: 0x19B }
+  - { offset: 0x84698, size: 0x8, addend: 0x0, symName: '___101-[MKAnnotationView(WebCache) sd_setImageWithURL:placeholderImage:options:context:progress:completed:]_block_invoke', symObjAddr: 0x28A, symBinAddr: 0xC52, symSize: 0x5A }
+  - { offset: 0x84750, size: 0x8, addend: 0x0, symName: ___copy_helper_block_e8_32w, symObjAddr: 0x2E4, symBinAddr: 0xCAC, symSize: 0x12 }
+  - { offset: 0x84779, size: 0x8, addend: 0x0, symName: ___destroy_helper_block_e8_32w, symObjAddr: 0x2F6, symBinAddr: 0xCBE, symSize: 0xE }
+  - { offset: 0x84798, size: 0x8, addend: 0x0, symName: '___101-[MKAnnotationView(WebCache) sd_setImageWithURL:placeholderImage:options:context:progress:completed:]_block_invoke.7', symObjAddr: 0x304, symBinAddr: 0xCCC, symSize: 0x23 }
+  - { offset: 0x84834, size: 0x8, addend: 0x0, symName: ___copy_helper_block_e8_32b, symObjAddr: 0x327, symBinAddr: 0xCEF, symSize: 0x17 }
+  - { offset: 0x8485D, size: 0x8, addend: 0x0, symName: ___destroy_helper_block_e8_32s, symObjAddr: 0x33E, symBinAddr: 0xD06, symSize: 0xF }
+...

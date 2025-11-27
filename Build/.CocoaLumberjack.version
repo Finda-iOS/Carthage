@@ -1,0 +1,31 @@
+{
+  "iOS" : [
+    {
+      "identifier" : "ios-arm64",
+      "name" : "CocoaLumberjack",
+      "container" : "CocoaLumberjack.xcframework",
+      "hash" : "3c11ce20e5ae4cb7c730776adcfbc364b2d578d2d665030db9cb5a59b6c227d9"
+    },
+    {
+      "identifier" : "ios-arm64_x86_64-simulator",
+      "name" : "CocoaLumberjack",
+      "container" : "CocoaLumberjack.xcframework",
+      "hash" : "da7ef54a810a39cb78dbd1eec0fc7439516fefae3a30dc11318bbf38f7e6bc09"
+    },
+    {
+      "swiftToolchainVersion" : "6.2.1 (swiftlang-6.2.1.4.8 clang-1700.4.4.1)",
+      "identifier" : "ios-arm64",
+      "name" : "CocoaLumberjackSwift",
+      "container" : "CocoaLumberjackSwift.xcframework",
+      "hash" : "fe3af51cade8298f540247f8fb5b2665c382ba8776acdb1884c232f2cb4bb5c3"
+    },
+    {
+      "name" : "CocoaLumberjackSwift",
+      "hash" : "2ef2fc15252ec26e1f2e7dd511d91d6f0f35c2a9ddebfb25e1af459b64f5718f",
+      "identifier" : "ios-arm64_x86_64-simulator",
+      "container" : "CocoaLumberjackSwift.xcframework",
+      "swiftToolchainVersion" : "6.2.1 (swiftlang-6.2.1.4.8 clang-1700.4.4.1)"
+    }
+  ],
+  "commitish" : "3.8.5"
+}

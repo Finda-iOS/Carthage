@@ -1,0 +1,19 @@
+{
+  "iOS" : [
+    {
+      "identifier" : "ios-arm64",
+      "container" : "CryptoSwift.xcframework",
+      "name" : "CryptoSwift",
+      "swiftToolchainVersion" : "6.2.1 (swiftlang-6.2.1.4.8 clang-1700.4.4.1)",
+      "hash" : "116c25ee1e7c9a659d6f040221b79c16b0c592d44546aec086d6d11f4a389120"
+    },
+    {
+      "identifier" : "ios-arm64_x86_64-simulator",
+      "container" : "CryptoSwift.xcframework",
+      "name" : "CryptoSwift",
+      "swiftToolchainVersion" : "6.2.1 (swiftlang-6.2.1.4.8 clang-1700.4.4.1)",
+      "hash" : "b31e7be463d3cdf1583fd077c0868a1f3d6870ffd2aad3a2468b759d2f39af3a"
+    }
+  ],
+  "commitish" : "1.8.3"
+}
