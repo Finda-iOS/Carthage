@@ -1,0 +1,95 @@
+# ============================================================
+# Cartfile
+# Build 폴더 기준 xcframework 21개 → Cartfile 항목 15개
+# (일부 항목은 빌드 시 여러 xcframework를 함께 생성)
+# ============================================================
+
+# BonMot
+# - 생성 xcframework: BonMot.xcframework
+# - 역할: NSAttributedString 스타일링 라이브러리 (폰트, 색상, 간격 등 텍스트 스타일 체이닝)
+github "Rightpoint/BonMot" == "6.1.3"
+
+# ChannelIO SDK
+# - 생성 xcframework: ChannelIOFront.xcframework
+# - 역할: 채널톡 인앱 고객센터 SDK (채팅 상담, 푸시 알림)
+github "channel-io/channel-plugin-ios" == "12.1.0"
+
+# CocoaLumberjack
+# - 생성 xcframework: CocoaLumberjack.xcframework, CocoaLumberjackSwift.xcframework
+#   └ CocoaLumberjack      : ObjC 기반 로깅 코어
+#   └ CocoaLumberjackSwift : Swift 전용 래퍼 (DDLogDebug 등 Swift-friendly API)
+# - 역할: 고성능 멀티채널 로깅 프레임워크 (파일/콘솔/원격 로그 분기)
+github "CocoaLumberjack/CocoaLumberjack" == "3.8.5"
+
+# CryptoSwift
+# - 생성 xcframework: CryptoSwift.xcframework
+# - 역할: 암호화 유틸리티 (AES, SHA, HMAC, Base64 등 순수 Swift 구현)
+github "krzyzanowskim/CryptoSwift" == "1.8.3"
+
+# DeepDiff
+# - 생성 xcframework: DeepDiff.xcframework
+# - 역할: 컬렉션 diff 계산 (UITableView/UICollectionView 배치 업데이트 최적화)
+github "onmyway133/DeepDiff" == "2.3.3"
+
+# Kingfisher
+# - 생성 xcframework: Kingfisher.xcframework
+# - 역할: 이미지 다운로드 및 캐싱 (URLSession 기반, SwiftUI/UIKit 지원)
+github "onevcat/Kingfisher" == "7.12.0"
+
+# Lottie
+# - 생성 xcframework: Lottie.xcframework
+# - 역할: Airbnb의 JSON(After Effects) 벡터 애니메이션 재생 라이브러리
+github "airbnb/lottie-ios" == "4.5.0"
+
+# Material Components iOS
+# - 생성 xcframework: MaterialComponents.xcframework
+#                     MDFInternationalization.xcframework
+#                     MDFTextAccessibility.xcframework
+#                     MotionAnimator.xcframework
+#                     MotionInterchange.xcframework
+#   └ MaterialComponents       : Google Material Design UI 컴포넌트 본체
+#   └ MDFInternationalization  : MaterialComponents 의존성 — RTL(오른쪽→왼쪽) 레이아웃 지원
+#   └ MDFTextAccessibility     : MaterialComponents 의존성 — 텍스트 색상 접근성 대비 계산
+#   └ MotionAnimator           : MaterialComponents 의존성 — Material 전환 애니메이션 엔진
+#   └ MotionInterchange        : MotionAnimator 의존성 — 애니메이션 타이밍/커브 공유 모델
+# - 역할: Google Material Design 스펙의 UI 컴포넌트 모음 (버튼, 텍스트필드, 바텀시트 등)
+github "material-components/material-components-ios" == "124.0.1"
+
+# ObjectMapper
+# - 생성 xcframework: ObjectMapper.xcframework
+# - 역할: JSON ↔ Swift Object 매핑 라이브러리 (Mappable 프로토콜 기반)
+github "tristanhimmelman/ObjectMapper" == "4.4.3"
+
+# SDWebImage
+# - 생성 xcframework: SDWebImage.xcframework
+#                     SDWebImageMapKit.xcframework
+#   └ SDWebImage       : 이미지 다운로드·캐싱 코어
+#   └ SDWebImageMapKit : SDWebImage 의존성 — MKAnnotationView 이미지 로딩 확장
+# - 역할: 비동기 이미지 로딩 및 캐싱 (UIImageView+WebCache 등)
+github "SDWebImage/SDWebImage" == "5.19.1"
+
+# Sentry
+# - 생성 xcframework: Sentry.xcframework
+# - 역할: 에러/크래시 모니터링 SDK (스택 트레이스, 성능 트레이싱, 세션 추적)
+# - 주의: Static xcframework 사용 (Dynamic 버전인 Sentry-Dynamic.xcframework 아님)
+github "getsentry/sentry-cocoa" == "9.10.0"
+
+# SkeletonView
+# - 생성 xcframework: SkeletonView.xcframework
+# - 역할: 로딩 중 스켈레톤 UI 애니메이션 (shimmer 효과, UIView 확장)
+github "Juanpe/SkeletonView" == "1.31.0"
+
+# SnapKit
+# - 생성 xcframework: SnapKit.xcframework
+# - 역할: Auto Layout DSL (make.top.equalTo(...) 형태의 Swift 제약 설정)
+github "SnapKit/SnapKit" == "5.7.1"
+
+# SwiftyJSON
+# - 생성 xcframework: SwiftyJSON.xcframework
+# - 역할: JSON 파싱 유틸리티 (subscript 기반 타입 안전 JSON 접근)
+github "SwiftyJSON/SwiftyJSON" == "5.0.2"
+
+# Swinject
+# - 생성 xcframework: Swinject.xcframework
+# - 역할: Swift 의존성 주입(DI) 컨테이너 (Container, Assembly, Resolver 패턴)
+github "Swinject/Swinject" == "2.9.1"
