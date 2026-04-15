@@ -1,30 +1,53 @@
-#if __has_include(<Sentry/SentryOptions.h>)
+#if __has_include(<Sentry/SentryProfilingConditionals.h>)
 #    import <Sentry/SentryProfilingConditionals.h>
 #else
 #    import "SentryProfilingConditionals.h"
 #endif
 
-#if __has_include(<Sentry/SentryOptions.h>)
-#    import <Sentry/SentrySDK.h>
+#if __has_include(<Sentry/SentrySDKInternal.h>)
+#    import <Sentry/SentrySDKInternal.h>
 #else
-#    import "SentrySDK.h"
+#    import "SentrySDKInternal.h"
 #endif
 
-@class SentryHub, SentryId, SentryAppStartMeasurement, SentryEnvelope;
+@class SentryAppStartMeasurement;
+@class SentryEnvelope;
+@class SentryFeedback;
+@class SentryOptions;
+@class SentryId;
+@class SentryHubInternal;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface
-SentrySDK ()
+@interface SentrySDKInternal ()
 
-+ (void)captureCrashEvent:(SentryEvent *)event;
++ (void)captureFatalEvent:(SentryEvent *)event;
 
-+ (void)captureCrashEvent:(SentryEvent *)event withScope:(SentryScope *)scope;
++ (void)captureFatalEvent:(SentryEvent *)event withScope:(SentryScope *)scope;
+
+#if SENTRY_HAS_UIKIT
++ (void)captureFatalAppHangEvent:(SentryEvent *)event;
+#endif // SENTRY_HAS_UIKIT
 
 /**
- * SDK private field to store the state if onCrashedLastRun was called.
+ * SDK private field to store the state if onLastRunStatusDetermined (or the deprecated
+ * onCrashedLastRun) callback was already called for the current SDK lifecycle.
  */
-@property (nonatomic, class) BOOL crashedLastRunCalled;
+@property (nonatomic, class) BOOL lastRunStatusCalled;
+
+/**
+ * Set to @c YES after the crash reporter has been installed and has loaded its persisted state
+ * from disk. This allows @c lastRunStatus to return a definitive answer instead of
+ * @c SentryLastRunStatusUnknown.
+ */
+@property (nonatomic, class) BOOL crashReporterInstalled;
+
+/**
+ * Set to @c YES by any integration that detects a fatal event from the previous run
+ * (crash reporter, watchdog termination). The integration installer checks this flag
+ * to decide whether to fire @c onLastRunStatusDetermined with @c didNotCrash.
+ */
+@property (nonatomic, class) BOOL fatalDetected;
 
 + (void)setDetectedStartUpCrash:(BOOL)value;
 
@@ -35,7 +58,7 @@ SentrySDK ()
 @property (nonatomic, class) NSUInteger startInvocations;
 @property (nullable, nonatomic, class) NSDate *startTimestamp;
 
-+ (SentryHub *)currentHub;
++ (SentryHubInternal *)currentHub;
 
 /**
  * The option used to start the SDK
@@ -52,19 +75,13 @@ SentrySDK ()
  */
 + (void)captureEnvelope:(SentryEnvelope *)envelope;
 
-#if SENTRY_TARGET_PROFILING_SUPPORTED
-/**
- * Start a new continuous profiling session if one is not already running.
- * @seealso https://docs.sentry.io/platforms/apple/profiling/
- */
-+ (void)startProfiler;
+#if SENTRY_HAS_UIKIT
 
-/**
- * Stop a continuous profiling session if there is one ongoing.
- * @seealso https://docs.sentry.io/platforms/apple/profiling/
- */
-+ (void)stopProfiler;
-#endif // SENTRY_TARGET_PROFILING_SUPPORTED
+/** Only needed for testing. We can't use `SENTRY_TEST || SENTRY_TEST_CI` because we call this from
+ * the iOS-Swift sample app. */
++ (nullable NSArray<NSString *> *)relevantViewControllersNames;
+
+#endif // SENTRY_HAS_UIKIT
 
 @end
 

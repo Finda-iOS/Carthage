@@ -1,17 +1,26 @@
-#import "SentryDefines.h"
-#import "SentrySerializable.h"
+#if __has_include(<Sentry/Sentry.h>)
+#    import <Sentry/SentryDefines.h>
+#elif __has_include(<SentryWithoutUIKit/Sentry.h>)
+#    import <SentryWithoutUIKit/SentryDefines.h>
+#else
+#    import <SentryDefines.h>
+#endif
+#import SENTRY_HEADER(SentrySerializable)
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class SentryStacktrace;
 
 @interface SentryThread : NSObject <SentrySerializable>
+
 SENTRY_NO_INIT
 
 /**
- * Number of the thread
+ * Number of the thread.
+ *
+ * Can be nil for threads in recrash reports where the thread index information is not available.
  */
-@property (nonatomic, copy) NSNumber *threadId;
+@property (nullable, nonatomic, copy) NSNumber *threadId;
 
 /**
  * Name (if available) of the thread
@@ -40,10 +49,10 @@ SENTRY_NO_INIT
 
 /**
  * Initializes a SentryThread with its id
- * @param threadId NSNumber
+ * @param threadId NSNumber or nil if thread index is not available (e.g., recrash reports)
  * @return SentryThread
  */
-- (instancetype)initWithThreadId:(NSNumber *)threadId;
+- (instancetype)initWithThreadId:(nullable NSNumber *)threadId;
 
 @end
 

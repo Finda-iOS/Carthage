@@ -1,5 +1,16 @@
 #import <Foundation/Foundation.h>
 
+// Clang warns if a double quoted include is used instead of angle brackets in a public header
+// These 3 import variations are how public headers can be imported with angle brackets
+// for Sentry, SentryWithoutUIKit, and SPM
+#if __has_include(<Sentry/Sentry.h>)
+#    define SENTRY_HEADER(file) <Sentry/file.h>
+#elif __has_include(<SentryWithoutUIKit/Sentry.h>)
+#    define SENTRY_HEADER(file) <SentryWithoutUIKit/file.h>
+#else
+#    define SENTRY_HEADER(file) <file.h>
+#endif
+
 #ifdef __cplusplus
 #    define SENTRY_EXTERN extern "C" __attribute__((visibility("default")))
 #else
@@ -18,9 +29,10 @@
 #endif
 
 // SENTRY_HAS_UIKIT means we're on a platform that can link UIKit and we're building a configuration
-// that will allow it to be autolinked. SENTRY_NO_UIKIT is set in GCC_PREPROCESSOR_DEFINITIONS
-// for configurations that we will not allow to link UIKit by setting CLANG_MODULES_AUTOLINK to NO.
-#if SENTRY_UIKIT_AVAILABLE && !SENTRY_NO_UIKIT
+// that will allow it to be autolinked. SENTRY_NO_UI_FRAMEWORK is set in
+// GCC_PREPROCESSOR_DEFINITIONS for configurations that we will not allow to link UIKit by setting
+// CLANG_MODULES_AUTOLINK to NO.
+#if SENTRY_UIKIT_AVAILABLE && !SENTRY_NO_UI_FRAMEWORK
 #    define SENTRY_HAS_UIKIT 1
 #else
 #    define SENTRY_HAS_UIKIT 0
@@ -32,13 +44,13 @@
 #    define SENTRY_TARGET_MACOS 0
 #endif
 
-#if (TARGET_OS_OSX || TARGET_OS_MACCATALYST) && !SENTRY_NO_UIKIT
+#if (TARGET_OS_OSX || TARGET_OS_MACCATALYST) && !SENTRY_NO_UI_FRAMEWORK
 #    define SENTRY_TARGET_MACOS_HAS_UI 1
 #else
 #    define SENTRY_TARGET_MACOS_HAS_UI 0
 #endif
 
-#if TARGET_OS_IOS || SENTRY_TARGET_MACOS
+#if TARGET_OS_IOS || SENTRY_TARGET_MACOS || TARGET_OS_VISION
 #    define SENTRY_HAS_METRIC_KIT 1
 #else
 #    define SENTRY_HAS_METRIC_KIT 0
@@ -50,18 +62,63 @@
 #    define SENTRY_TARGET_REPLAY_SUPPORTED 0
 #endif
 
+/**
+ * Temporary macro used during Swift migration to track places where we use @c id instead of
+ * the actual Swift type due to Objective-C/Swift interoperability issues.
+ * The macro takes the intended type name as a parameter for documentation purposes.
+ *
+ * Usage: @c SENTRY_SWIFT_MIGRATION_ID(ClassName) instead of @c ClassName @c *
+ *
+ * To find all places that need updating after Swift migration is complete, comment out the
+ * macro definition below. The compiler will then show errors at all usage sites, making it
+ * easy to locate and fix them.
+ *
+ * Example:
+ * @code
+ * // Temporary workaround during migration:
+ * @property (nonatomic, strong) SENTRY_SWIFT_MIGRATION_ID(MySwiftClass) myProperty;
+ *
+ * @endcode
+ */
+#define SENTRY_SWIFT_MIGRATION_ID(className) id
+
+/**
+ * Temporary macro used during Swift migration to track places where we use @c NSInteger instead of
+ * a Swift enum type due to Objective-C/Swift interoperability issues.
+ * The macro takes the intended enum name as a parameter for documentation purposes.
+ *
+ * Usage: @c SENTRY_SWIFT_MIGRATION_VALUE(EnumName) instead of the enum type directly.
+ *
+ * To find all places that need updating after Swift migration is complete, comment out the
+ * macro definition below. The compiler will then show errors at all usage sites, making it
+ * easy to locate and fix them.
+ *
+ * Example:
+ * @code
+ * // Temporary workaround during migration:
+ * - (void)doSomething:(SENTRY_SWIFT_MIGRATION_VALUE(SentryMyEnum))value;
+ *
+ * @endcode
+ */
+#define SENTRY_SWIFT_MIGRATION_VALUE(enumName) NSInteger
+
 #define SENTRY_NO_INIT                                                                             \
     -(instancetype)init NS_UNAVAILABLE;                                                            \
     +(instancetype) new NS_UNAVAILABLE;
 
-#if !TARGET_OS_WATCH && !(TARGET_OS_VISION && SENTRY_NO_UIKIT == 1)
-#    define SENTRY_HAS_REACHABILITY 1
-#else
-#    define SENTRY_HAS_REACHABILITY 0
-#endif
-
-@class SentryEvent, SentryBreadcrumb, SentrySamplingContext;
+@class SentryAttribute;
+@class SentryBreadcrumb;
+@class SentryEvent;
+@class SentrySamplingContext;
+@class SentryUserFeedbackConfiguration;
+@class SentryLog;
 @protocol SentrySpan;
+
+// Compatibility alias to maintain backward compatibility with existing Objective-C code.
+// SentryLogAttribute is an alias for SentryAttribute, allowing code like
+// [[SentryLogAttribute alloc] initWithString:...] to continue working, after `SentryLog.Attribute`
+// was renamed to `SentryAttribute`.
+@compatibility_alias SentryLogAttribute SentryAttribute;
 
 /**
  * Block used for returning after a request finished
@@ -100,6 +157,13 @@ typedef id<SentrySpan> _Nullable (^SentryBeforeSendSpanCallback)(id<SentrySpan> 
 typedef BOOL (^SentryBeforeCaptureScreenshotCallback)(SentryEvent *_Nonnull event);
 
 /**
+ * Block can be used to decide if the SDK should capture a view hierarchy or not. Return @c true if
+ * the SDK should capture a view hierarchy, return @c false if not. This callback doesn't work for
+ * crashes.
+ */
+typedef BOOL (^SentryBeforeCaptureViewHierarchyCallback)(SentryEvent *_Nonnull event);
+
+/**
  * A callback to be notified when the last program execution terminated with a crash.
  */
 typedef void (^SentryOnCrashedLastRunCallback)(SentryEvent *_Nonnull event);
@@ -122,52 +186,6 @@ typedef BOOL (^SentryShouldQueueEvent)(
 typedef NSNumber *_Nullable (^SentryTracesSamplerCallback)(
     SentrySamplingContext *_Nonnull samplingContext);
 
-/**
- * Function pointer for span manipulation.
- * @param span The span to be used.
- */
-typedef void (^SentrySpanCallback)(id<SentrySpan> _Nullable span);
-
-/**
- * A callback block which gets called right before a metric is about to be emitted.
-
- * @param key  The key of the metric.
- * @param tags A dictionary of key-value pairs associated with the metric.
- * @return BOOL YES if the metric should be emitted, NO otherwise.
- */
-typedef BOOL (^SentryBeforeEmitMetricCallback)(
-    NSString *_Nonnull key, NSDictionary<NSString *, NSString *> *_Nonnull tags);
-
-/**
- * Log level.
- */
-typedef NS_ENUM(NSInteger, SentryLogLevel) {
-    kSentryLogLevelNone = 1,
-    kSentryLogLevelError,
-    kSentryLogLevelDebug,
-    kSentryLogLevelVerbose
-};
-
-/**
- * Sentry level.
- */
-typedef NS_ENUM(NSUInteger,
-    SentryLevel); // This is a forward declaration, the actual enum is implemented in Swift.
-
-/**
- * Static internal helper to convert enum to string.
- */
-static DEPRECATED_MSG_ATTRIBUTE(
-    "Use nameForSentryLevel() instead.") NSString *_Nonnull const SentryLevelNames[]
-    = {
-          @"none",
-          @"debug",
-          @"info",
-          @"warning",
-          @"error",
-          @"fatal",
-      };
-
 static NSUInteger const defaultMaxBreadcrumbs = 100;
 
 static NSString *_Nonnull const kSentryTrueString = @"true";
@@ -178,3 +196,13 @@ static NSString *_Nonnull const kSentryFalseString = @"false";
  */
 typedef NS_ENUM(NSInteger, SentryTransactionNameSource); // This is a forward declaration, the
                                                          // actual enum is implemented in Swift.
+
+#if TARGET_OS_IOS && SENTRY_HAS_UIKIT
+
+/**
+ * Block used to configure the user feedback widget, form, behaviors and submission data.
+ */
+typedef void (^SentryUserFeedbackConfigurationBlock)(
+    SentryUserFeedbackConfiguration *_Nonnull configuration);
+
+#endif // TARGET_OS_IOS && SENTRY_HAS_UIKIT

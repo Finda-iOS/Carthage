@@ -1,10 +1,20 @@
-#import "SentryDefines.h"
-#import "SentrySerializable.h"
-#import "SentrySpanContext.h"
+#if __has_include(<Sentry/Sentry.h>)
+#    import <Sentry/SentryDefines.h>
+#elif __has_include(<SentryWithoutUIKit/Sentry.h>)
+#    import <SentryWithoutUIKit/SentryDefines.h>
+#else
+#    import <SentryDefines.h>
+#endif
+#import SENTRY_HEADER(SentrySerializable)
+#import SENTRY_HEADER(SentrySpanContext)
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class SentrySpanId, SentryId, SentryTraceHeader, SentryMeasurementUnit;
+@class SentryId;
+@class SentryMeasurementUnit;
+@class SentrySpanId;
+@class SentryTraceContext;
+@class SentryTraceHeader;
 
 NS_SWIFT_NAME(Span)
 @protocol SentrySpan <SentrySerializable>
@@ -81,6 +91,11 @@ NS_SWIFT_NAME(Span)
 @property (readonly) BOOL isFinished;
 
 /**
+ * Retrieves a trace context from this tracer.
+ */
+@property (nullable, nonatomic, readonly) SentryTraceContext *traceContext;
+
+/**
  * Starts a child span.
  * @param operation Short code identifying the type of operation the span is measuring.
  * @return SentrySpan
@@ -102,13 +117,6 @@ NS_SWIFT_NAME(Span)
  * Sets a value to data.
  */
 - (void)setDataValue:(nullable id)value forKey:(NSString *)key NS_SWIFT_NAME(setData(value:key:));
-
-/**
- * Use @c setDataValue instead. This method calls @c setDataValue, was added by mistake, and will be
- * removed in a future version.
- */
-- (void)setExtraValue:(nullable id)value
-               forKey:(NSString *)key DEPRECATED_ATTRIBUTE NS_SWIFT_NAME(setExtra(value:key:));
 
 /**
  * Removes a data value.
@@ -166,6 +174,14 @@ NS_SWIFT_NAME(Span)
  * @return SentryTraceHeader.
  */
 - (SentryTraceHeader *)toTraceHeader;
+
+/**
+ * Returns the baggage http header
+ * @return NSString.
+ */
+- (nullable NSString *)baggageHttpHeader;
+
+- (NSDictionary<NSString *, id> *)serialize;
 
 @end
 

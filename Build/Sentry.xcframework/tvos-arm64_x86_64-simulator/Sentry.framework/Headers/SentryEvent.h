@@ -1,12 +1,26 @@
 #import <Foundation/Foundation.h>
-
-#import "SentryDefines.h"
-#import "SentrySerializable.h"
+#if __has_include(<Sentry/Sentry.h>)
+#    import <Sentry/SentryDefines.h>
+#elif __has_include(<SentryWithoutUIKit/Sentry.h>)
+#    import <SentryWithoutUIKit/SentryDefines.h>
+#else
+#    import <SentryDefines.h>
+#endif
+#import SENTRY_HEADER(SentrySerializable)
+#import SENTRY_HEADER(SentryLevel)
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class SentryThread, SentryException, SentryStacktrace, SentryUser, SentryDebugMeta, SentryContext,
-    SentryBreadcrumb, SentryId, SentryMessage, SentryRequest;
+@class SentryBreadcrumb;
+@class SentryContext;
+@class SentryDebugMeta;
+@class SentryException;
+@class SentryId;
+@class SentryMessage;
+@class SentryRequest;
+@class SentryStacktrace;
+@class SentryThread;
+@class SentryUser;
 
 NS_SWIFT_NAME(Event)
 @interface SentryEvent : NSObject <SentrySerializable>
@@ -41,7 +55,7 @@ NS_SWIFT_NAME(Event)
 /**
  * @c SentryLevel of the event.
  */
-@property (nonatomic) enum SentryLevel level;
+@property (nonatomic) SentryLevel level;
 
 /**
  * This will be used for symbolicating on the server should be "cocoa".
@@ -87,6 +101,14 @@ NS_SWIFT_NAME(Event)
 
 /**
  * Arbitrary key:value (string:string ) data that will be shown with the event.
+ *
+ * @note For @c SentryTransaction instances accessed in @c beforeSend callbacks, this property
+ * returns a merged dictionary of both event tags and tracer tags (with tracer tags taking
+ * precedence). Modifications to this dictionary persist when using Swift's dictionary subscript
+ * assignment (e.g., @c transaction.tags?["key"] = "value" ), which automatically calls the setter.
+ *
+ * In Objective-C, you must explicitly call the setter after modifying the dictionary to persist
+ * changes (e.g., @c transaction.tags = modifiedDict ).
  */
 @property (nonatomic, strong) NSDictionary<NSString *, NSString *> *_Nullable tags;
 
@@ -168,7 +190,7 @@ NS_SWIFT_NAME(Event)
 /**
  * Init an @c SentryEvent will set all needed fields by default.
  */
-- (instancetype)init;
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 
 /**
  * Init a @c SentryEvent with a @c SentryLevelError and set all needed fields by default.
